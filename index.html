@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AURUM — Event Management · Dept. of CSE (AIML), IEM Kolkata</title>
+<meta name="description" content="AURUM is the official event management platform of the Department of CSE (AIML), Institute of Engineering &amp; Management, Kolkata — semester events, live countdown, online registration, gallery and feedback.">
+<meta name="author" content="Anurima Pradhan — Roll No. 28, Sec E">
+<meta name="theme-color" content="#0a0b0f">
+<meta property="og:title" content="AURUM — CSE (AIML) Event Management, IEM Kolkata">
+<meta property="og:description" content="Seven events. One semester. Live countdown, filtering and a three-step registration desk.">
+<meta property="og:image" content="assets/og-cover.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230a0b0f'/%3E%3Cpath d='M32 13l14 8v22l-14 8-14-8V21z' fill='none' stroke='%23e8c88a' stroke-width='3'/%3E%3Ccircle cx='32' cy='32' r='4.5' fill='%23e8c88a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600;1,700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Local css/js carry a ?v= stamp. The images under /assets are served immutable, so a
+     versioned stylesheet is what makes a reader pick up a design change on the next reload
+     instead of on the one after their cache expires. -->
+<link rel="stylesheet" href="css/tokens.css?v=2">
+<link rel="stylesheet" href="css/styles.css?v=2">
+<noscript><link rel="stylesheet" href="css/noscript.css?v=2"></noscript>
+</head>
+
+<body>
+
+<!-- ==================================================================
+     Fixed chrome
+     ================================================================== -->
+<div class="fx-grain" aria-hidden="true"></div>
+<div class="fx-aurora" id="aurora" aria-hidden="true">
+  <span class="aurora-blob b1"></span>
+  <span class="aurora-blob b2"></span>
+  <span class="aurora-blob b3"></span>
+</div>
+<div class="scroll-progress" aria-hidden="true"><i id="scrollBar"></i></div>
+<canvas id="confetti" class="fx-confetti" aria-hidden="true"></canvas>
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+<div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ==================================================================
+     Header
+     ================================================================== -->
+<header class="hdr" id="hdr">
+  <div class="hdr__inner">
+    <a href="#home" class="brand" data-cursor="link" aria-label="AURUM — home">
+      <svg class="brand__mark" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M32 6l22 13v26L32 58 10 45V19z" fill="none" stroke="currentColor" stroke-width="2.4"/>
+        <path d="M32 20l9 5.4v11L32 41.8l-9-5.4v-11z" fill="none" stroke="currentColor" stroke-width="2.4" opacity=".7"/>
+        <circle cx="32" cy="31" r="3.2" fill="currentColor"/>
+      </svg>
+      <span class="brand__word">AURUM</span>
+      <span class="brand__meta">CSE · AIML<em>IEM Kolkata</em></span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Primary">
+      <a href="#home"     class="nav__link is-current" data-cursor="link">Home</a>
+      <a href="#events"   class="nav__link" data-cursor="link">Events</a>
+      <a href="#register" class="nav__link" data-cursor="link">Register</a>
+      <a href="#gallery"  class="nav__link" data-cursor="link">Gallery</a>
+      <a href="#about"    class="nav__link" data-cursor="link">About</a>
+      <a href="#contact"  class="nav__link" data-cursor="link">Contact</a>
+    </nav>
+
+    <div class="hdr__tools">
+      <button class="icon-btn" id="themeBtn" data-cursor="hover" aria-label="Switch to light theme" title="Dark / light theme">
+        <span class="icon-btn__glyph" aria-hidden="true">
+          <svg viewBox="0 0 24 24" class="g-moon"><path d="M20 14.5A8.5 8.5 0 019.5 4 8.5 8.5 0 1020 14.5z" fill="currentColor"/></svg>
+          <svg viewBox="0 0 24 24" class="g-sun"><circle cx="12" cy="12" r="4.6" fill="currentColor"/><path d="M12 2v2.6M12 19.4V22M2 12h2.6M19.4 12H22M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </span>
+      </button>
+      <a href="#register" class="btn btn--primary btn--sm" data-cursor="magnetic">Register<em aria-hidden="true">→</em></a>
+      <button class="burger" id="burger" data-cursor="hover" aria-label="Open menu" aria-expanded="false" aria-controls="mobilePanel">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="sheet" id="mobilePanel" aria-hidden="true">
+  <nav class="sheet__nav" aria-label="Mobile">
+    <a href="#home"><i>01</i>Home</a>
+    <a href="#events"><i>02</i>Events</a>
+    <a href="#register"><i>03</i>Register</a>
+    <a href="#gallery"><i>04</i>Gallery</a>
+    <a href="#about"><i>05</i>About</a>
+    <a href="#contact"><i>06</i>Contact</a>
+  </nav>
+  <p class="sheet__foot">Department of CSE (AIML)<br>Institute of Engineering &amp; Management, Kolkata</p>
+</div>
+
+<main id="main">
+  <noscript>
+    <p class="js-off">This page renders its event list and registration desk with JavaScript — please enable it to see the seven events of the semester.</p>
+  </noscript>
+
+  <!-- ================================================================
+       1 · HERO
+       ================================================================ -->
+  <section class="hero" id="home">
+    <div class="hero__bg" data-speed="0.16" aria-hidden="true"></div>
+    <div class="hero__scrim" aria-hidden="true"></div>
+
+    <div class="wrap hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow" data-reveal>
+          <span class="eyebrow__dot"></span>Odd semester 2026–27 · B.Tech
+        </p>
+
+        <h1 class="display" id="heroTitle">
+          <span class="line"><span class="line__in" id="heroCountLine">Seven events.</span></span>
+          <span class="line"><span class="line__in italic" data-scramble data-text="One semester.">One semester.</span></span>
+          <span class="line"><span class="line__in">Zero missed dates.</span></span>
+        </h1>
+
+        <p class="hero__lede" data-reveal>
+          The official event desk of the <strong>Department of Computer Science &amp; Engineering
+          (AIML)</strong> at IEM, Kolkata. Hackathons, workshops, guest lectures and the annual
+          tech fest — everything scheduled this semester in one place: see it, filter it,
+          register for it.
+        </p>
+
+        <div class="hero__actions" data-reveal>
+          <a href="#events" class="btn btn--primary" data-cursor="magnetic">
+            <span class="btn__mask"><span>Explore events</span><span>Explore events</span></span>
+          </a>
+          <a href="#register" class="btn btn--ghost" data-cursor="magnetic">
+            <span class="btn__mask"><span>Register now</span><span>Register now</span></span>
+            <em class="btn__arrow" aria-hidden="true">↗</em>
+          </a>
+        </div>
+
+        <ul class="hero__facts" data-reveal>
+          <li><b id="factEvents">6</b><span>events listed</span></li>
+          <li><b id="factSeats">920</b><span>total seats</span></li>
+          <li><b>Free–₹150</b><span>entry range</span></li>
+        </ul>
+      </div>
+
+      <!-- FEATURE 1 & 2 — live countdown + digital clock -->
+      <aside class="deck" data-reveal aria-label="Next event countdown">
+        <header class="deck__head">
+          <p class="deck__label"><span class="pulse"></span>Next event</p>
+          <h2 class="deck__title" id="cdTitle" aria-live="polite">Loading…</h2>
+          <p class="deck__meta" id="cdMeta"></p>
+        </header>
+
+        <div class="flip" id="countdown" role="timer" aria-label="Time remaining">
+          <div class="flip__unit"><span class="flip__num" id="cdDays">00</span><small>days</small></div>
+          <i class="flip__sep">:</i>
+          <div class="flip__unit"><span class="flip__num" id="cdHours">00</span><small>hours</small></div>
+          <i class="flip__sep">:</i>
+          <div class="flip__unit"><span class="flip__num" id="cdMins">00</span><small>min</small></div>
+          <i class="flip__sep">:</i>
+          <div class="flip__unit"><span class="flip__num" id="cdSecs">00</span><small>sec</small></div>
+        </div>
+
+        <div class="deck__clock">
+          <svg class="dial" viewBox="0 0 44 44" aria-hidden="true">
+            <circle cx="22" cy="22" r="20" fill="none" stroke="currentColor" stroke-width="1" opacity=".28"/>
+            <line x1="22" y1="22" x2="22" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" id="dialHand"/>
+            <circle cx="22" cy="22" r="1.9" fill="currentColor"/>
+          </svg>
+          <p>Right now in Kolkata <time id="clock">--:--:--</time></p>
+          <span class="deck__tz">IST · UTC+5:30</span>
+        </div>
+
+        <a href="#register" class="deck__cta" data-cursor="link">
+          Reserve a seat
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </aside>
+    </div>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__track" id="tickerTrack"></div>
+      <div class="ticker__track" id="tickerTrack2"></div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       2 · STATS
+       ================================================================ -->
+  <section class="stats" aria-label="At a glance">
+    <div class="wrap stats__grid">
+      <div class="stat" data-reveal>
+        <span class="stat__num" data-count="6">0</span>
+        <span class="stat__cap">Events this semester</span>
+      </div>
+      <div class="stat" data-reveal>
+        <span class="stat__num" data-count="920">0</span>
+        <span class="stat__cap">Seats opened</span>
+      </div>
+      <div class="stat" data-reveal>
+        <span class="stat__num" data-count="240" data-suffix="+">0</span>
+        <span class="stat__cap">Registrations in 2025</span>
+      </div>
+      <div class="stat" data-reveal>
+        <span class="stat__num" data-count="12" data-suffix="h">0</span>
+        <span class="stat__cap">Longest event, HackMatrix</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       3 · EVENTS  (FEATURE 3 — dynamic rendering + filtering)
+       ================================================================ -->
+  <section class="section events" id="events">
+    <div class="wrap">
+      <header class="sec-head">
+        <div>
+          <p class="eyebrow"><span class="eyebrow__dot"></span>Programme</p>
+          <h2 class="sec-title">Upcoming <em>events</em></h2>
+        </div>
+        <p class="sec-note">
+          Rendered live from a JavaScript data array — no hard-coded cards. Filter by type,
+          or scroll through everything scheduled this semester.
+        </p>
+      </header>
+
+      <div class="filters" role="group" aria-label="Filter events by category">
+        <div class="filters__indicator" id="filterInd" aria-hidden="true"></div>
+        <button class="chip is-active" data-filter="all" aria-pressed="true"><span>All</span><i id="countAll">6</i></button>
+        <button class="chip" data-filter="technical" aria-pressed="false"><span>Technical</span><i>0</i></button>
+        <button class="chip" data-filter="workshop" aria-pressed="false"><span>Workshops</span><i>0</i></button>
+        <button class="chip" data-filter="cultural" aria-pressed="false"><span>Cultural</span><i>0</i></button>
+        <button class="chip" data-filter="lecture" aria-pressed="false"><span>Lectures</span><i>0</i></button>
+      </div>
+
+      <ol class="grid" id="eventGrid"><!-- rendered by js/main.js --></ol>
+      <p class="empty" id="eventEmpty" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8.5 15a4.4 4.4 0 017 0M9 9.5h.01M15 9.5h.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        No events in this category yet — check back soon.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       4 · REGISTER  (FEATURE 4 — validated multi-step form)
+       ================================================================ -->
+  <section class="section register" id="register">
+    <div class="wrap register__grid">
+      <div class="register__aside">
+        <p class="eyebrow"><span class="eyebrow__dot"></span>Registration desk</p>
+        <h2 class="sec-title">Claim your <em>seat</em></h2>
+        <p class="sec-note">
+          Open to every B.Tech student of IEM. One form per student per event —
+          confirmation lands on your college email within 24 hours.
+        </p>
+        <ul class="rules">
+          <li><i>01</i>Use your official 10-digit IEM roll number.</li>
+          <li><i>02</i>Team events: every member registers separately.</li>
+          <li><i>03</i>Registrations close 48 hours before the event.</li>
+          <li><i>04</i>Carry your college ID card — it is checked at the desk.</li>
+        </ul>
+        <div class="saved" id="savedBox" hidden>
+          <p class="saved__title">Your saved passes</p>
+          <ul class="saved__list" id="savedList"></ul>
+        </div>
+      </div>
+
+      <div class="desk">
+        <div class="desk__bar">
+          <p class="desk__kicker">Form <span aria-hidden="true">·</span> PCCCS382</p>
+          <ol class="steps" id="steps">
+            <li class="is-active"><i>1</i><span>You</span></li>
+            <li><i>2</i><span>Event</span></li>
+            <li><i>3</i><span>Review</span></li>
+          </ol>
+          <div class="desk__meter"><i id="stepMeter"></i></div>
+        </div>
+
+        <form class="form" id="regForm" novalidate autocomplete="on">
+          <!-- step 1 -->
+          <fieldset class="step" data-step="1">
+            <legend class="sr-only">Your details</legend>
+            <div class="field">
+              <label for="studentName">Full name</label>
+              <div class="control">
+                <input type="text" id="studentName" name="studentName" placeholder="Anurima Pradhan" autocomplete="name" data-rule="name">
+                <span class="control__ok" aria-hidden="true">✓</span>
+              </div>
+              <small class="err" id="err-studentName"></small>
+            </div>
+            <div class="pair">
+              <div class="field">
+                <label for="rollNo">Roll number</label>
+                <div class="control">
+                  <input type="text" id="rollNo" name="rollNo" inputmode="numeric" placeholder="10 digits" maxlength="10" autocomplete="off" data-rule="roll">
+                  <span class="control__ok" aria-hidden="true">✓</span>
+                </div>
+                <small class="err" id="err-rollNo"></small>
+              </div>
+              <div class="field">
+                <label for="department">Department</label>
+                <div class="control control--select">
+                  <select id="department" name="department" data-rule="required" data-required="Select your department.">
+                    <option value="">Select department</option>
+                    <option>CSE (AIML)</option><option>CSE</option><option>CSBS</option>
+                    <option>IT</option><option>ECE</option><option>EE</option>
+                    <option>ME</option><option>CE</option>
+                  </select>
+                  <svg class="control__caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                </div>
+                <small class="err" id="err-department"></small>
+              </div>
+            </div>
+            <div class="pair">
+              <div class="field">
+                <label for="email">College email</label>
+                <div class="control">
+                  <input type="email" id="email" name="email" placeholder="you@iem.edu.in" autocomplete="email" data-rule="email">
+                  <span class="control__ok" aria-hidden="true">✓</span>
+                </div>
+                <small class="err" id="err-email"></small>
+              </div>
+              <div class="field">
+                <label for="phone">Phone</label>
+                <div class="control">
+                  <span class="control__pre">+91</span>
+                  <input type="tel" id="phone" name="phone" inputmode="numeric" placeholder="10-digit mobile" maxlength="10" autocomplete="tel" data-rule="phone" class="has-pre">
+                  <span class="control__ok" aria-hidden="true">✓</span>
+                </div>
+                <small class="err" id="err-phone"></small>
+              </div>
+            </div>
+            <div class="field">
+              <label id="genderLabel">Gender</label>
+              <div class="segmented" id="genderGroup" role="radiogroup" aria-labelledby="genderLabel">
+                <label><input type="radio" name="gender" value="Female"><span>Female</span></label>
+                <label><input type="radio" name="gender" value="Male"><span>Male</span></label>
+                <label><input type="radio" name="gender" value="Other"><span>Other</span></label>
+                <label><input type="radio" name="gender" value="Prefer not to say"><span>Skip</span></label>
+              </div>
+              <small class="err" id="err-gender"></small>
+            </div>
+          </fieldset>
+
+          <!-- step 2 -->
+          <fieldset class="step" data-step="2" hidden>
+            <legend class="sr-only">Choose an event</legend>
+            <div class="field">
+              <label for="eventSelect">Event</label>
+              <div class="control control--select">
+                <select id="eventSelect" name="eventSelect" data-rule="required" data-required="Select the event you want to register for.">
+                  <option value="">Select an event</option>
+                </select>
+                <svg class="control__caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </div>
+              <small class="err" id="err-eventSelect"></small>
+            </div>
+            <div class="picker" id="eventPicker" role="listbox" aria-label="Pick an event"></div>
+            <div class="pair">
+              <div class="field">
+                <label for="yearOfStudy">Year of study</label>
+                <div class="control control--select">
+                  <select id="yearOfStudy" name="yearOfStudy">
+                    <option>1st year</option><option selected>2nd year</option>
+                    <option>3rd year</option><option>4th year</option>
+                  </select>
+                  <svg class="control__caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                </div>
+              </div>
+              <div class="field">
+                <label for="teamName">Team name <span class="opt">optional</span></label>
+                <div class="control">
+                  <input type="text" id="teamName" name="teamName" placeholder="e.g. Null Pointers" autocomplete="off">
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- step 3 -->
+          <fieldset class="step" data-step="3" hidden>
+            <legend class="sr-only">Review</legend>
+            <div class="review" id="review"></div>
+            <label class="check">
+              <input type="checkbox" id="agree" data-rule="agree">
+              <span class="check__box" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.4 4.4L19 7.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="check__txt">I confirm the details above are correct and agree to the event code of conduct.</span>
+            </label>
+            <small class="err" id="err-agree"></small>
+          </fieldset>
+
+          <div class="form__foot">
+            <button type="button" class="btn btn--ghost btn--sm" id="backBtn" hidden>← Back</button>
+            <p class="form__status" id="regStatus" role="status" aria-live="polite"></p>
+            <button type="button" class="btn btn--primary" id="nextBtn" data-cursor="magnetic">
+              <span class="btn__mask"><span>Continue</span><span>Continue</span></span>
+            </button>
+            <button type="submit" class="btn btn--primary" id="submitBtn" hidden data-cursor="magnetic">
+              <span class="btn__mask"><span>Submit registration</span><span>Submit registration</span></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       5 · GALLERY
+       ================================================================ -->
+  <section class="section gallery" id="gallery">
+    <header class="wrap sec-head">
+      <div>
+        <p class="eyebrow"><span class="eyebrow__dot"></span>Archive</p>
+        <h2 class="sec-title">Moments from <em>2025</em></h2>
+      </div>
+      <p class="sec-note">Drag sideways, scroll, or tap a frame to open it. Original photography, made for this project.</p>
+    </header>
+
+    <div class="rail-wrap">
+      <button class="rail-btn prev" id="railPrev" aria-label="Previous photo" data-cursor="hover">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+      <ul class="rail" id="rail">
+        <li class="frame" data-full="assets/g-01.jpg">
+          <figure><img src="assets/g-01.jpg" alt="Final hour of the 24-hour HackMatrix build sprint" loading="lazy" data-parallax="0.1"><figcaption><b>HackMatrix ’25</b><span>Final build hour, AIML Central Lab</span></figcaption></figure>
+        </li>
+        <li class="frame" data-full="assets/g-02.jpg">
+          <figure><img src="assets/g-02.jpg" alt="Crowd at the opening of the annual tech fest" loading="lazy" data-parallax="0.1"><figcaption><b>Innovacion</b><span>Opening night, annual tech fest</span></figcaption></figure>
+        </li>
+        <li class="frame" data-full="assets/g-03.jpg">
+          <figure><img src="assets/g-03.jpg" alt="Hands-on deep learning workshop in the AIML lab" loading="lazy" data-parallax="0.1"><figcaption><b>Deep Learning Lab</b><span>Hands-on session, AIML laboratory</span></figcaption></figure>
+        </li>
+        <li class="frame" data-full="assets/g-04.jpg">
+          <figure><img src="assets/g-04.jpg" alt="Students presenting projects at the innovation expo" loading="lazy" data-parallax="0.1"><figcaption><b>Project Expo</b><span>Bench-side judging, Seminar Hall</span></figcaption></figure>
+        </li>
+        <li class="frame" data-full="assets/g-05.jpg">
+          <figure><img src="assets/g-05.jpg" alt="Line-following robot on the robotics challenge track" loading="lazy" data-parallax="0.1"><figcaption><b>RoboTech</b><span>Line-follower run 4, Robotics Lab</span></figcaption></figure>
+        </li>
+        <li class="frame" data-full="assets/g-06.jpg">
+          <figure><img src="assets/g-06.jpg" alt="Industry guest addressing students in the seminar hall" loading="lazy" data-parallax="0.1"><figcaption><b>Guest Lecture</b><span>Industry session, Seminar Hall</span></figcaption></figure>
+        </li>
+      </ul>
+
+      <button class="rail-btn next" id="railNext" aria-label="Next photo" data-cursor="hover">
+        <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="rail-meter"><i id="railMeter"></i></div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       6 · ABOUT
+       ================================================================ -->
+  <section class="section about" id="about">
+    <div class="wrap about__grid">
+      <div>
+        <p class="eyebrow"><span class="eyebrow__dot"></span>The department</p>
+        <h2 class="sec-title">Built by students, <em>for students</em></h2>
+        <p class="prose">
+          The Department of Computer Science &amp; Engineering (Artificial Intelligence and Machine
+          Learning) at the Institute of Engineering &amp; Management, Kolkata runs a four-year B.Tech
+          programme centred on machine learning, deep learning, data science and their applications.
+          The department maintains dedicated AIML and IoT laboratories and works closely with the
+          IETE Student Forum and the institute's innovation cell.
+        </p>
+        <p class="prose">
+          Every event on this platform is planned by a student committee under faculty guidance and is
+          open to all branches unless stated otherwise.
+        </p>
+
+        <div class="marquee-tag" aria-hidden="true">
+          <div class="marquee-tag__track">
+            <span>Machine Learning</span><span>·</span><span>Deep Learning</span><span>·</span><span>Data Science</span><span>·</span><span>Robotics &amp; IoT</span><span>·</span><span>Cyber Security</span><span>·</span><span>Innovation Cell</span><span>·</span><span>IETE Student Forum</span><span>·</span>
+            <span>Machine Learning</span><span>·</span><span>Deep Learning</span><span>·</span><span>Data Science</span><span>·</span><span>Robotics &amp; IoT</span><span>·</span><span>Cyber Security</span><span>·</span><span>Innovation Cell</span><span>·</span><span>IETE Student Forum</span><span>·</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="about__right">
+        <h3 class="mini-title">Coordinator desk</h3>
+        <div class="people">
+          <article class="person" data-reveal><span class="avatar">SB</span><p><b>Dr. Sudipta Bhattacharya</b><i>Faculty coordinator</i><small>Associate Professor, CSE (AIML)</small></p></article>
+          <article class="person" data-reveal><span class="avatar">AR</span><p><b>Anurima Pradhan</b><i>Student coordinator</i><small>2nd year, CSE (AIML) · Roll 28, Sec E</small></p></article>
+          <article class="person" data-reveal><span class="avatar">KD</span><p><b>Kaustav Dutta</b><i>Technical lead</i><small>4th year, CSE (AIML)</small></p></article>
+          <article class="person" data-reveal><span class="avatar">MG</span><p><b>Mahi Ghosh</b><i>Cultural lead</i><small>2nd year, CSE (AIML)</small></p></article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       7 · CONTACT  (FEATURE 5 — feedback form validation)
+       ================================================================ -->
+  <section class="section contact" id="contact">
+    <div class="wrap contact__grid">
+      <div>
+        <p class="eyebrow"><span class="eyebrow__dot"></span>Get in touch</p>
+        <h2 class="sec-title">Questions, sponsors, <em>glitches</em></h2>
+        <p class="sec-note">Something unclear about an event, or a registration that never confirmed? Write to the desk.</p>
+
+        <address class="addr">
+          <div><b>Address</b><span>Department of CSE (AIML), Institute of Engineering &amp; Management<br>Gurukul Campus, Y-12, Block EP, Sector V, Salt Lake<br>Kolkata 700091, West Bengal, India</span></div>
+          <div><b>Email</b><a href="mailto:events.aiml@iem.edu.in">events.aiml@iem.edu.in</a></div>
+          <div><b>Phone</b><a href="tel:+913323572059">+91 33 2357 2059</a></div>
+          <div><b>Office hours</b><span>Monday – Friday, 10:00 – 17:00 IST</span></div>
+        </address>
+      </div>
+
+      <form class="panel" id="feedbackForm" novalidate>
+        <h3 class="mini-title">Send feedback</h3>
+        <div class="field">
+          <label for="fbName">Your name</label>
+          <div class="control">
+            <input type="text" id="fbName" name="fbName" placeholder="Who is writing?" data-rule="name">
+            <span class="control__ok" aria-hidden="true">✓</span>
+          </div>
+          <small class="err" id="err-fbName"></small>
+        </div>
+        <div class="field">
+          <label for="fbEmail">Email</label>
+          <div class="control">
+            <input type="email" id="fbEmail" name="fbEmail" placeholder="you@example.com" data-rule="email">
+            <span class="control__ok" aria-hidden="true">✓</span>
+          </div>
+          <small class="err" id="err-fbEmail"></small>
+        </div>
+        <div class="field">
+          <label for="fbMessage">Message</label>
+          <div class="control">
+            <textarea id="fbMessage" name="fbMessage" rows="5" placeholder="Tell us what worked, what didn't, or what you would like to see next." data-rule="message"></textarea>
+          </div>
+          <div class="counter"><small class="err" id="err-fbMessage"></small><span><b id="fbCount">0</b>/15 min</span></div>
+        </div>
+        <button type="submit" class="btn btn--primary" data-cursor="magnetic">
+          <span class="btn__mask"><span>Send message</span><span>Send message</span></span>
+        </button>
+        <p class="form__status" id="fbStatus" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <div>
+      <p class="foot__brand">AURUM<em>°</em></p>
+      <p class="foot__sub">Event management platform for the Department of CSE (AIML),<br>Institute of Engineering &amp; Management, Kolkata.</p>
+    </div>
+    <dl class="foot__cols">
+      <div><dt>Course</dt><dd>PCCCS382 — IT Workshop</dd><dd>Web Development · Event Management</dd></div>
+      <div><dt>Built with</dt><dd>HTML5 · CSS3 · Vanilla JavaScript</dd><dd>No frameworks, no build step</dd></div>
+      <div><dt>Submitted by</dt><dd>Anurima Pradhan</dd><dd>Roll No. 28 · Section E · CSE (AIML)</dd></div>
+    </dl>
+  </div>
+  <div class="wrap foot__base">
+    <p>© 2026 Department of CSE (AIML), IEM Kolkata. Artwork generated for this project.</p>
+    <a href="#home" class="totop" data-cursor="magnetic">Back to top
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</footer>
+
+<!-- Lightbox -->
+<div class="lb" id="lightbox" role="dialog" aria-modal="true" aria-label="Gallery viewer" hidden>
+  <button class="lb__close" id="lbClose" aria-label="Close viewer">
+    <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  </button>
+  <button class="lb__nav prev" id="lbPrev" aria-label="Previous photo"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <figure class="lb__figure">
+    <img id="lbImg" src="" alt="">
+    <figcaption id="lbCap"></figcaption>
+  </figure>
+  <button class="lb__nav next" id="lbNext" aria-label="Next photo"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <p class="lb__count"><span id="lbIndex">1</span> / <span id="lbTotal">6</span></p>
+</div>
+
+<!-- Pass / success modal -->
+<div class="pass" id="passModal" role="dialog" aria-modal="true" aria-labelledby="passTitle" hidden>
+  <div class="pass__card">
+    <svg class="pass__tick" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="none" stroke="currentColor" stroke-width="2" opacity=".35"/><path d="M15 27l7.5 7.5L37 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <p class="pass__kicker">Registration confirmed</p>
+    <h3 id="passTitle" class="pass__title">You're on the list</h3>
+    <div class="pass__ticket">
+      <div class="pass__stub"><span>AURUM · IEM</span><b id="passId">AUR-0000</b></div>
+      <dl>
+        <div><dt>Name</dt><dd id="passName">—</dd></div>
+        <div><dt>Roll</dt><dd id="passRoll">—</dd></div>
+        <div><dt>Event</dt><dd id="passEvent">—</dd></div>
+        <div><dt>Venue</dt><dd id="passVenue">—</dd></div>
+        <div><dt>When</dt><dd id="passWhen">—</dd></div>
+      </dl>
+    </div>
+    <p class="pass__note">A confirmation mail is sent to your college address. Screenshot this pass and carry your ID card.</p>
+    <div class="pass__actions">
+      <button class="btn btn--ghost btn--sm" id="passCopy" data-cursor="hover">Copy pass ID</button>
+      <button class="btn btn--primary btn--sm" id="passClose" data-cursor="hover">Done</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/data.js?v=2"></script>
+<script src="js/effects.js?v=2"></script>
+<script src="js/main.js?v=2"></script>
+</body>
+</html>

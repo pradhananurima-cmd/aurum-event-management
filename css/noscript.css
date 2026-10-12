@@ -1,0 +1,16 @@
+/* =====================================================================
+   AURUM · css/noscript.css
+   Only loaded when JavaScript is switched off. The page is rendered by
+   js/main.js, so we undo every "start hidden" state created for the
+   motion engine and drop the layers that would otherwise sit on top of
+   static content.
+   ===================================================================== */
+[data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }
+.line__in { transform: none !important; }
+.fx-grain, .fx-aurora, .fx-confetti, .cursor-dot, .cursor-ring,
+.deck, .scroll-progress, .rail-btn { display: none !important; }
+.js-off {
+  margin: 6rem auto 0; max-width: 60ch; text-align: center;
+  padding: 1.2rem 1.4rem; border: 1px dashed var(--line-2); border-radius: var(--r-lg);
+  color: var(--text-2); font-size: .95rem;
+}

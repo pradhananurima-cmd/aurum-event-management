@@ -1,0 +1,12 @@
+{
+  "name": "aurum-audit",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Headless-Chrome functional audit for the AURUM event platform (72 assertions).",
+  "scripts": {
+    "audit": "node audit.js"
+  },
+  "devDependencies": {
+    "puppeteer": "^23.0.0"
+  }
+}
